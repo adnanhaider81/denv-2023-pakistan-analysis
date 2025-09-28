@@ -1,0 +1,177 @@
+# Snakemake pipeline for DENV 2023 Pakistan analysis
+# Requires NCBI_EMAIL env var for Entrez steps
+
+import yaml, os
+cfg = yaml.safe_load(open("config/config.yaml"))
+
+SAMPLES = [x.get("sample","DENV_001") for x in cfg.get("pairs", [{"sample":"DENV_001","r1":"data-private/DENV_001_R1.fastq.gz","r2":"data-private/DENV_001_R2.fastq.gz"}])]
+META = {x.get("sample","DENV_001"): x for x in cfg.get("pairs", [])}
+if not META:
+    META = {"DENV_001": {"r1":"data-private/DENV_001_R1.fastq.gz","r2":"data-private/DENV_001_R2.fastq.gz"}}
+
+THREADS = cfg["params"]["threads"]
+MAX_HITS = cfg["params"]["max_blast_hits"]
+
+rule all:
+    input:
+        expand("results/consensus/{s}.fa", s=SAMPLES),
+        "results/consensus/all_consensus.fasta",
+        "results/aln/wg_alignment.fasta",
+        "results/iqtree/wg.treefile",
+        expand("results/mutations/{s}_aa_diffs.tsv", s=SAMPLES)
+
+rule trim:
+    input:
+        r1=lambda w: META[w.s]["r1"],
+        r2=lambda w: META[w.s]["r2"]
+    output:
+        r1="work/{s}.R1.trim.fastq.gz",
+        r2="work/{s}.R2.trim.fastq.gz"
+    params:
+        adapters=cfg["params"]["trim_adapters"]
+    threads: THREADS
+    shell:
+        "trimmomatic PE -threads {threads} {input.r1} {input.r2} "
+        "{output.r1} /dev/null {output.r2} /dev/null "
+        "ILLUMINACLIP:{params.adapters}:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:30 MINLEN:50"
+
+rule assemble_spades:
+    input:
+        r1="work/{s}.R1.trim.fastq.gz",
+        r2="work/{s}.R2.trim.fastq.gz"
+    output:
+        contigs="results/spades/{s}/contigs.fasta"
+    threads: THREADS
+    shell:
+        "spades.py -1 {input.r1} -2 {input.r2} -o results/spades/{wildcards.s}"
+
+rule contig_qc:
+    input:
+        contigs="results/spades/{s}/contigs.fasta"
+    output:
+        tsv="results/spades/{s}/contigs.qc.tsv"
+    shell:
+        "python analysis/scripts/contig_qc.py --in {input.contigs} --out_tsv {output.tsv}"
+
+rule blast_contigs:
+    input:
+        contigs="results/spades/{s}/contigs.fasta"
+    output:
+        tsv="results/spades/{s}/contigs.blast.tsv"
+    params:
+        max_hits=MAX_HITS
+    shell:
+        "python analysis/scripts/blast_closest.py --in {input.contigs} --max_hits {params.max_hits} --out_tsv {output.tsv}"
+
+rule preferred_lists:
+    output:
+        d1="refs/denv1_pref.txt",
+        d2="refs/denv2_pref.txt"
+    run:
+        with open(output.d1, "w") as f:
+            for acc in cfg["reference_preference"]["denv1_ref_accessions"]:
+                f.write(acc + "\n")
+        with open(output.d2, "w") as f:
+            for acc in cfg["reference_preference"]["denv2_ref_accessions"]:
+                f.write(acc + "\n")
+
+rule pick_ref:
+    input:
+        blast="results/spades/{s}/contigs.blast.tsv",
+        d1="refs/denv1_pref.txt",
+        d2="refs/denv2_pref.txt"
+    output:
+        acc="refs/{s}.ref.txt"
+    shell:
+        "(python analysis/scripts/pick_best_ref.py --blast_tsv {input.blast} --preferred {input.d1} --out_accession {output.acc} || "
+        " python analysis/scripts/pick_best_ref.py --blast_tsv {input.blast} --preferred {input.d2} --out_accession {output.acc})"
+
+rule fetch_ref:
+    input:
+        acc="refs/{s}.ref.txt"
+    output:
+        fa="refs/{s}.ref.fasta"
+    shell:
+        "python analysis/scripts/fetch_genbank_single.py --acc $(cat {input.acc}) --out_fasta {output.fa}"
+
+rule map_bwa:
+    input:
+        r1="work/{s}.R1.trim.fastq.gz",
+        r2="work/{s}.R2.trim.fastq.gz",
+        ref="refs/{s}.ref.fasta"
+    output:
+        bam="work/{s}.sorted.bam"
+    threads: THREADS
+    shell:
+        "bwa index {input.ref} && "
+        "bwa mem -t {threads} {input.ref} {input.r1} {input.r2} | samtools sort -@ {threads} -o {output.bam} && "
+        "picard MarkDuplicates I={output.bam} O=work/{wildcards.s}.dedup.bam M=work/{wildcards.s}.dupmetrics.txt VALIDATION_STRINGENCY=SILENT REMOVE_SEQUENCING_DUPLICATES=false && "
+        "samtools index work/{wildcards.s}.dedup.bam"
+
+rule depth_mask_call_consensus:
+    input:
+        bam="work/{s}.dedup.bam",
+        ref="refs/{s}.ref.fasta"
+    output:
+        depth="work/{s}.depth.txt",
+        mask="work/{s}.mask.bed",
+        vcf="work/{s}.variants.vcf.gz",
+        cons="results/consensus/{s}.fa"
+    params:
+        min_dp=cfg["params"]["min_depth_consensus"]
+    threads: THREADS
+    shell:
+        "samtools depth -a {input.bam} > {output.depth} && "
+        "awk -v OFS='\\t' -v MIN={params.min_dp} '{ if ($3<MIN) print $1, $2-1, $2 }' {output.depth} > {output.mask} && "
+        "bcftools mpileup -Ou -f {input.ref} {input.bam} | bcftools call -mv -Oz -o {output.vcf} && bcftools index {output.vcf} && "
+        "bcftools consensus -f {input.ref} -m {output.mask} {output.vcf} > {output.cons}"
+
+rule combine_consensus:
+    input:
+        expand("results/consensus/{s}.fa", s=SAMPLES)
+    output:
+        "results/consensus/all_consensus.fasta"
+    shell:
+        "cat {input} > {output}"
+
+rule fetch_context:
+    output:
+        "results/refs/context.fasta"
+    shell:
+        "printf '%s\n' " + " ".join(cfg["context_accessions"]) + " | tr ' ' '\\n' > config/context.txt && "
+        "python analysis/scripts/fetch_genbank.py --acc config/context.txt --out_fasta {output}"
+
+rule align_wg:
+    input:
+        cons="results/consensus/all_consensus.fasta",
+        ctx="results/refs/context.fasta"
+    output:
+        "results/aln/wg_alignment.fasta"
+    shell:
+        "mkdir -p results/aln && "
+        "cat {input.cons} {input.ctx} > results/aln/wg_input.fasta && "
+        "mafft --auto results/aln/wg_input.fasta > {output}"
+
+rule iqtree_wg:
+    input:
+        aln="results/aln/wg_alignment.fasta"
+    output:
+        tree="results/iqtree/wg.treefile"
+    params:
+        model=cfg["params"]["iqtree_model_wg"],
+        bb=cfg["params"]["bootstrap"]
+    threads: 2
+    shell:
+        "mkdir -p results/iqtree && "
+        "iqtree -s {input.aln} -m {params.model} -bb {params.bb} -nt {threads} -pre results/iqtree/wg"
+
+rule aa_diffs:
+    input:
+        cons="results/consensus/{s}.fa",
+        ref_acc="refs/{s}.ref.txt"
+    output:
+        tsv="results/mutations/{s}_aa_diffs.tsv"
+    shell:
+        "acc=$(cat {input.ref_acc}); "
+        "if echo $acc | grep -q 'NC_001477\\|DENV-1'; then refaa='AAW64436.1'; else refaa='NC_001474.1'; fi; "
+        "python analysis/scripts/annotate_and_translate.py --ref_acc $refaa --genomes {input.cons} --out_tsv {output.tsv}"

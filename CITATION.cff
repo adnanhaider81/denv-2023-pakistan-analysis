@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: Please cite this code and the associated paper.
+title: DENV genomic diversity in Pakistan 2023 analysis
+authors:
+  - family-names: Haider
+    given-names: Syed Adnan
+version: 1.0.0
+date-released: 2025-09-29
+preferred-citation:
+  type: article
+  title: Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2
+  authors:
+    - family-names: Jamal
+      given-names: Zunera
+    - family-names: Haider
+      given-names: Syed Adnan
+    - family-names: Hakim
+      given-names: Rabia
+    - family-names: Humayun
+      given-names: Fahad
+    - family-names: Farooq
+      given-names: Muhammad Umar
+    - family-names: Ammar
+      given-names: Muhammad
+    - family-names: Afrough
+      given-names: Babak
+    - family-names: Inamdar
+      given-names: Leena
+    - family-names: Salman
+      given-names: Muhammad
+    - family-names: Umair
+      given-names: Massab
+  year: 2024
+  doi: 10.1002/jmv.29727

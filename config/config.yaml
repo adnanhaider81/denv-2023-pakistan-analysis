@@ -1,0 +1,73 @@
+pairs:
+  - sample: DENV1_001
+    r1: data-private/DENV1_001_R1.fastq.gz
+    r2: data-private/DENV1_001_R2.fastq.gz
+
+reference_preference:
+  denv1_ref_accessions:
+    - OR936753.1
+    - OR936754.1
+    - OR936755.1
+    - OR936756.1
+    - OR936757.1
+    - OR936758.1
+    - OR936759.1
+    - OR936760.1
+    - OR936761.1
+    - OR936762.1
+    - OR936763.1
+    - OR936764.1
+    - OR936765.1
+    - OR936766.1
+    - OR936767.1
+    - OR936768.1
+    - OR936769.1
+    - OQ445883.1
+    - ON908217.1
+    - ON873938.1
+    - OP898557.1
+    - OP898558.1
+    - NC_001477.1
+
+  denv2_ref_accessions:
+    - OR936752.1
+    - OP811977.1
+    - OP811984.1
+    - MK543472.1
+    - MW186240.1
+    - NC_001474.1
+
+context_accessions:
+  - OR936753.1
+  - OR936754.1
+  - OR936755.1
+  - OR936756.1
+  - OR936757.1
+  - OR936758.1
+  - OR936759.1
+  - OR936760.1
+  - OR936761.1
+  - OR936762.1
+  - OR936763.1
+  - OR936764.1
+  - OR936765.1
+  - OR936766.1
+  - OR936767.1
+  - OR936768.1
+  - OR936769.1
+  - OR936752.1
+  - ON908217.1
+  - ON873938.1
+  - OP898557.1
+  - OP898558.1
+  - MK543472.1
+  - MW186240.1
+
+params:
+  threads: 4
+  trim_adapters: env/TruSeq3-PE.fa
+  min_depth_consensus: 10
+  min_qual: 20
+  iqtree_model_wg: GTR+G+I
+  bootstrap: 1000
+  max_blast_hits: 50
