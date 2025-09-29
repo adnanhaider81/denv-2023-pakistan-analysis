@@ -68,6 +68,8 @@ rule preferred_lists:
         d1="refs/denv1_pref.txt",
         d2="refs/denv2_pref.txt"
     run:
+        import yaml
+        cfg = yaml.safe_load(open("config/config.yaml"))
         with open(output.d1, "w") as f:
             for acc in cfg["reference_preference"]["denv1_ref_accessions"]:
                 f.write(acc + "\n")
@@ -138,7 +140,7 @@ rule fetch_context:
     output:
         "results/refs/context.fasta"
     shell:
-        "printf '%s\n' " + " ".join(cfg["context_accessions"]) + " | tr ' ' '\\n' > config/context.txt && "
+        "printf '%s\n' " + " ".join(["OR936753.1","OR936754.1","OR936755.1","OR936756.1","OR936757.1","OR936758.1","OR936759.1","OR936760.1","OR936761.1","OR936762.1","OR936763.1","OR936764.1","OR936765.1","OR936766.1","OR936767.1","OR936768.1","OR936769.1","OR936752.1","ON908217.1","ON873938.1","OP898557.1","OP898558.1","MK543472.1","MW186240.1"]) + " | tr ' ' '\\n' > config/context.txt && " + \
         "python analysis/scripts/fetch_genbank.py --acc config/context.txt --out_fasta {output}"
 
 rule align_wg:
@@ -158,8 +160,8 @@ rule iqtree_wg:
     output:
         tree="results/iqtree/wg.treefile"
     params:
-        model=cfg["params"]["iqtree_model_wg"],
-        bb=cfg["params"]["bootstrap"]
+        model=cfg['params']['iqtree_model_wg'],
+        bb=cfg['params']['bootstrap']
     threads: 2
     shell:
         "mkdir -p results/iqtree && "

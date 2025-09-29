@@ -13,7 +13,6 @@ def fetch_ref(acc, email, api_key=None):
 def polyprotein_coords(rec):
     for f in rec.features:
         if f.type == 'CDS':
-            # first CDS is the polyprotein for dengue references
             return int(f.location.start), int(f.location.end), int(f.location.strand or 1)
     raise SystemExit('No CDS in reference')
 
@@ -34,14 +33,13 @@ s, e, strand = polyprotein_coords(ref_rec)
 ref_nt = ref_rec.seq[s:e] if strand == 1 else ref_rec.seq[s:e].reverse_complement()
 ref_aa = ref_nt.translate()
 
+from Bio import SeqIO
 with open(a.out_tsv, 'w') as out:
-    out.write('sample	pos	ref_aa	alt_aa
-')
+    out.write('sample\tpos\tref_aa\talt_aa\n')
     for rec in SeqIO.parse(a.genomes, 'fasta'):
         aa = rec.seq.translate()
         L = min(len(aa), len(ref_aa))
         for i in range(L):
             if aa[i] != ref_aa[i]:
-                out.write(f'{rec.id}	{i+1}	{ref_aa[i]}	{aa[i]}
-')
+                out.write(f'{rec.id}\t{i+1}\t{ref_aa[i]}\t{aa[i]}\n')
 print('Wrote', a.out_tsv)

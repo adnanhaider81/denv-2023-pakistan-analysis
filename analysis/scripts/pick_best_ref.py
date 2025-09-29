@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse, csv, sys, os
-# Pick the top BLAST hit by bitscore as mapping reference, prefer accessions listed in --preferred if provided
 ap = argparse.ArgumentParser()
 ap.add_argument('--blast_tsv', required=True, help='Output from blast_closest.py')
 ap.add_argument('--preferred', required=False, help='Optional newline-separated accession whitelist to prefer')

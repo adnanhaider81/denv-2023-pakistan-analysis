@@ -1,12 +1,12 @@
 # Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2
 
-Reproducible code and workflow that mirror the analysis in the manuscript from Journal of Medical Virology (2024). DOI: [10.1002/jmv.29727](https://doi.org/10.1002/jmv.29727)
+Reproducible code and workflow that mirror the analysis in the Journal of Medical Virology article (2024). DOI: 10.1002/jmv.29727
 
 ## Program summary
 End to end analysis of DENV-1 and DENV-2 using metagenomic NGS. Steps match the study design and are fully scripted to allow reviewers and collaborators to reproduce the results.
 
 1) Inputs
-   - Paired-end FASTQ from serum RNA libraries sequenced on Illumina MiSeq 2x150.
+   - Paired end FASTQ from serum RNA libraries sequenced on Illumina MiSeq 2x150.
 
 2) Quality control and trimming
    - FastQC for initial QC.
@@ -19,9 +19,9 @@ End to end analysis of DENV-1 and DENV-2 using metagenomic NGS. Steps match the 
    - BLAST remote against NCBI nt to identify closest matches.
    - Download selected GenBank sequences for context trees and for mapping references.
 
-4) Reference-based mapping and masked consensus
-   - For each sample, choose the best reference from BLAST hits and map with BWA-MEM.
-   - Sort, mark duplicates, compute per-base depth.
+4) Reference based mapping and masked consensus
+   - For each sample, choose the best reference from BLAST hits and map with BWA MEM.
+   - Sort, mark duplicates, compute per base depth.
    - Mask sites below a coverage threshold to N and call variants with bcftools.
    - Build a masked consensus per sample. The default minimum depth is 10, matching the study.
 
@@ -47,7 +47,7 @@ End to end analysis of DENV-1 and DENV-2 using metagenomic NGS. Steps match the 
 8) Repro and compliance
    - MIT LICENSE, CITATION.cff.
    - CI sanity check for plotting.
-   - Never commit restricted or clinical data. Set NCBI_EMAIL once for Entrez-based steps.
+   - Never commit restricted or clinical data. Set NCBI_EMAIL once for Entrez based steps.
 
 ## Requirements
 - Python 3.11 or newer
@@ -71,7 +71,7 @@ python -m pip install -r env/requirements.txt
 python analysis/scripts/example_qc_plot.py --in data-example/example_counts.tsv --out results-example/example_plot.png
 ```
 
-## One-command end to end run
+## One command end to end run
 ```bash
 export NCBI_EMAIL="you@example.com"
 conda env create -f env/environment.yml
@@ -159,3 +159,30 @@ params:
   bootstrap: 1000
   max_blast_hits: 50
 ```
+
+## How to cite
+- Paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. 96(6):e29727. https://doi.org/10.1002/jmv.29727
+- Software: Haider SA. DENV genomic diversity in Pakistan 2023 analysis. Version 2.0. GitHub repository.
+
+## References
+- Andrews S. 2010. FastQC. Babraham Bioinformatics.
+- Bolger AM, Lohse M, Usadel B. 2014. Trimmomatic: a flexible trimmer for Illumina sequence data. Bioinformatics 30:2114-2120.
+- Broad Institute. Picard Toolkit. GitHub repository.
+- Bankevich A, et al. 2012. SPAdes: a new genome assembly algorithm and its applications to single cell sequencing. J Comput Biol 19:455-477.
+- Li H. 2013. Aligning sequence reads with BWA-MEM. arXiv:1303.3997.
+- Li H, et al. 2009. The Sequence Alignment/Map format and SAMtools. Bioinformatics 25:2078-2079.
+- Danecek P, et al. 2021. Twelve years of SAMtools and BCFtools. GigaScience 10:giab008.
+- Katoh K, Standley DM. 2013. MAFFT multiple sequence alignment software version 7. Mol Biol Evol 30:772-780.
+- Minh BQ, et al. 2020. IQ-TREE 2: new models and efficient methods for phylogenetic inference. Mol Biol Evol 37:1530-1534.
+- Larkin MA, et al. 2007. Clustal W and Clustal X version 2.0. Bioinformatics 23:2947-2948.
+- Shen W, Xiong J. 2016. SeqKit: a cross platform toolkit for FASTA and FASTQ. PLoS One 11:e0163962.
+- Camacho C, et al. 2009. BLAST+: architecture and applications. BMC Bioinformatics 10:421.
+- Kans J. Entrez Programming Utilities Help. NCBI.
+- Cock PJ, et al. 2009. Biopython: freely available Python tools for computational molecular biology. Bioinformatics 25:1422-1423.
+- Köster J, Rahmann S. 2012. Snakemake: a scalable bioinformatics workflow engine. Bioinformatics 28:2520-2522.
+
+## Contributing
+Contributions are welcome. See `CONTRIBUTING.md`. Open an issue for questions. Do not commit restricted data.
+
+## License
+MIT. See `LICENSE` for details.
