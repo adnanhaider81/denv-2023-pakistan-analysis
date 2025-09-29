@@ -1,6 +1,6 @@
 # Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2
 
-Reproducible code and workflow that mirror the analysis in the manuscript from Journal of Medical Virology (2024). DOI: 10.1002/jmv.29727
+Reproducible code and workflow that mirror the analysis in the manuscript from Journal of Medical Virology (2024). DOI: [10.1002/jmv.29727](https://doi.org/10.1002/jmv.29727)
 
 ## Program summary
 End to end analysis of DENV-1 and DENV-2 using metagenomic NGS. Steps match the study design and are fully scripted to allow reviewers and collaborators to reproduce the results.
