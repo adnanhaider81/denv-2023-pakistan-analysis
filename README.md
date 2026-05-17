@@ -7,6 +7,23 @@ Reproducible code and workflow that mirror the analysis in the Journal of Medica
 
 Published paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. https://doi.org/10.1002/jmv.29727
 
+## Workflow overview
+
+This repository documents the DENV-1 and DENV-2 analysis path from metagenomic serum sequencing reads to contig validation, serotype-specific reference selection, masked consensus generation, phylogeny, and protein-level mutation summaries.
+
+```mermaid
+flowchart LR
+  A["Serum metagenomic FASTQ"] --> B["QC and trimming"]
+  B --> C["De novo assembly"]
+  C --> D["BLAST contig validation"]
+  D --> E["DENV-1/DENV-2 reference selection"]
+  E --> F["Reference mapping"]
+  F --> G["Masked consensus"]
+  G --> H["Whole-genome alignment"]
+  H --> I["IQ-TREE phylogeny"]
+  G --> J["Polyprotein mutation summary"]
+```
+
 ## Program summary
 End to end analysis of DENV-1 and DENV-2 using metagenomic NGS. Steps match the study design and are fully scripted to allow reviewers and collaborators to reproduce the results.
 
@@ -167,7 +184,7 @@ params:
 
 ## How to cite
 - Paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. 96(6):e29727. https://doi.org/10.1002/jmv.29727
-- Software: Haider SA. DENV genomic diversity in Pakistan 2023 analysis. Version 1.0.0. Zenodo. https://doi.org/10.5281/zenodo.20257749
+- Software: Haider SA. Dengue Virus Genomic Diversity Workflow, Pakistan 2023. Version 1.0.0. Zenodo. https://doi.org/10.5281/zenodo.20257749
 - All-version software DOI: https://doi.org/10.5281/zenodo.20257748
 
 ## References
