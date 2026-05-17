@@ -1,5 +1,7 @@
 # Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2
 
+[![Smoke test](https://github.com/adnanhaider81/denv-2023-pakistan-analysis/actions/workflows/smoke-test.yml/badge.svg)](https://github.com/adnanhaider81/denv-2023-pakistan-analysis/actions/workflows/smoke-test.yml)
+
 Reproducible code and workflow that mirror the analysis in the Journal of Medical Virology article (2024). DOI: 10.1002/jmv.29727
 
 ## Program summary
@@ -162,7 +164,7 @@ params:
 
 ## How to cite
 - Paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. 96(6):e29727. https://doi.org/10.1002/jmv.29727
-- Software: Haider SA. DENV genomic diversity in Pakistan 2023 analysis. Version 2.0. GitHub repository.
+- Software: Haider SA. DENV genomic diversity in Pakistan 2023 analysis. Version 1.0.0. GitHub repository.
 
 ## References
 - Andrews S. 2010. FastQC. Babraham Bioinformatics.
