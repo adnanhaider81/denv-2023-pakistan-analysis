@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: Please cite this code and the associated paper.
-title: DENV genomic diversity in Pakistan 2023 analysis
+title: Dengue Virus Genomic Diversity Workflow, Pakistan 2023
 authors:
   - family-names: Haider
     given-names: Syed Adnan
