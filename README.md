@@ -182,6 +182,10 @@ params:
   max_blast_hits: 50
 ```
 
+## Data governance
+
+See [DATA_GOVERNANCE.md](DATA_GOVERNANCE.md) for public-data, restricted-data, and sample-identifier handling rules.
+
 ## How to cite
 - Paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. 96(6):e29727. https://doi.org/10.1002/jmv.29727
 - Software: Haider SA. Dengue Virus Genomic Diversity Workflow, Pakistan 2023. Version 1.0.0. Zenodo. https://doi.org/10.5281/zenodo.20257749
