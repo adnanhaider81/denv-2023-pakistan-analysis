@@ -7,6 +7,20 @@ Reproducible code and workflow that mirror the analysis in the Journal of Medica
 
 Published paper: Jamal Z, Haider SA, Hakim R, Humayun F, Farooq MU, Ammar M, Afrough B, Inamdar L, Salman M, Umair M. Serotype and genomic diversity of dengue virus during the 2023 outbreak in Pakistan reveals the circulation of genotype III of DENV-1 and cosmopolitan genotype of DENV-2. Journal of Medical Virology. 2024. https://doi.org/10.1002/jmv.29727
 
+## Abbreviations
+
+| Term | Meaning |
+| --- | --- |
+| DENV | Dengue virus |
+| DENV-1 | Dengue virus serotype 1 |
+| DENV-2 | Dengue virus serotype 2 |
+| NGS | Next-generation sequencing |
+| SPAdes | Genome assembler used for contig generation |
+| BWA | Burrows-Wheeler Aligner for read mapping |
+| MAFFT | Multiple-sequence alignment program |
+| IQ-TREE | Maximum-likelihood phylogenetic tree program |
+| QC | Quality control |
+
 ## Workflow overview
 
 This repository documents the DENV-1 and DENV-2 analysis path from metagenomic serum sequencing reads to contig validation, serotype-specific reference selection, masked consensus generation, phylogeny, and protein-level mutation summaries.
